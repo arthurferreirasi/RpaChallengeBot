@@ -11,21 +11,43 @@ selenium.ClickByXpath("//button[contains(text(),'Start')]");
 
 for (int row = 2; row <= rows; row++)
 {
-    string firstName = sheet.Cell($"A{row}").Value.ToString();
-    string lastName = sheet.Cell($"B{row}").Value.ToString();
-    string companyName = sheet.Cell($"C{row}").Value.ToString();
-    string role = sheet.Cell($"D{row}").Value.ToString();
-    string address = sheet.Cell($"E{row}").Value.ToString();
-    string email = sheet.Cell($"F{row}").Value.ToString();
-    string phoneNumber = sheet.Cell($"G{row}").Value.ToString();
-
-    selenium.JsInputByXpath("//input[@ng-reflect-name='labelFirstName']", firstName);
-    selenium.JsInputByXpath("//input[@ng-reflect-name='labelPhone']", phoneNumber);
-    selenium.JsInputByXpath("//input[@ng-reflect-name='labelLastName']", lastName);
-    selenium.JsInputByXpath("//input[@ng-reflect-name='labelRole']", role);
-    selenium.JsInputByXpath("//input[@ng-reflect-name='labelEmail']", email);
-    selenium.JsInputByXpath("//input[@ng-reflect-name='labelAddress']", address);
-    selenium.JsInputByXpath("//input[@ng-reflect-name='labelCompanyName']", companyName);
+    Parallel.Invoke(
+            () =>
+            {
+                string firstName = sheet.Cell($"A{row}").Value.ToString();
+                selenium.JsInputByXpath("//input[@ng-reflect-name='labelFirstName']", firstName);
+            },
+            () =>
+            {
+                string phoneNumber = sheet.Cell($"G{row}").Value.ToString();
+                selenium.JsInputByXpath("//input[@ng-reflect-name='labelPhone']", phoneNumber);
+            },
+            () =>
+            {
+                string lastName = sheet.Cell($"B{row}").Value.ToString();
+                selenium.JsInputByXpath("//input[@ng-reflect-name='labelLastName']", lastName);
+            },
+            () =>
+            {
+                string role = sheet.Cell($"D{row}").Value.ToString();
+                selenium.JsInputByXpath("//input[@ng-reflect-name='labelRole']", role);
+            },
+            () =>
+            {
+                string email = sheet.Cell($"F{row}").Value.ToString();
+                selenium.JsInputByXpath("//input[@ng-reflect-name='labelEmail']", email);
+            },
+            () =>
+            {
+                string address = sheet.Cell($"E{row}").Value.ToString();
+                selenium.JsInputByXpath("//input[@ng-reflect-name='labelAddress']", address);
+            },
+            () =>
+            {
+                string companyName = sheet.Cell($"C{row}").Value.ToString();
+                selenium.JsInputByXpath("//input[@ng-reflect-name='labelCompanyName']", companyName);
+            }
+    );
 
     selenium.ClickByXpath("//input[@type='submit']");
 }
